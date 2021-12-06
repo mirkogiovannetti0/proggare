@@ -1,5 +1,6 @@
 import React from "react";
 import "./Navbar.css";
+import brandLogo from "assets/images/brand-logo.svg";
 import DropdownItem from "components/DropdownItem/DropdownItem";
 
 import inboxImg from "assets/images/inbox-2.svg";
@@ -14,8 +15,6 @@ import DropdownWrapper from "components/DropdownWrapper/DropdownWrapper";
 import { ReactComponent as Hamburger } from "assets/images/hamburger.svg";
 
 import { ReactComponent as CrossIcon } from "assets/images/cross-icon.svg";
-import { Link } from "react-router-dom";
-import Logo from "components/Logo/Logo";
 
 function Navbar() {
   const [show, setShow] = React.useState(false);
@@ -32,9 +31,9 @@ function Navbar() {
     <div className="navbar-wrapper">
       <div className="container-wrapper">
         <div className="navbar">
-          <Link to="/" className="navbar-left">
-            <Logo />
-          </Link>
+          <div className="navbar-left">
+            <img src={brandLogo} className="brand-logo" alt="" />
+          </div>
 
           <div className="hamburger" onClick={() => setShow(!show)}>
             <Hamburger />
@@ -102,7 +101,7 @@ function Navbar() {
                     <button>Free Trial</button>
                     <div className="already-customer">
                       <p>Already a Customer?</p>
-                      <Link to="/">Login</Link>
+                      <a href="#">Login</a>
                     </div>
                   </div>
                 </div>
@@ -175,27 +174,18 @@ function Navbar() {
                 <div className="navbar-link light-blue graphik-regular fs-15px pointer ">
                   Demo
                 </div>
-                <Link
-                  to="/pricing"
-                  className="navbar-link light-blue graphik-regular fs-15px pointer "
-                >
+                <div className="navbar-link light-blue graphik-regular fs-15px pointer ">
                   Pricing
-                </Link>
+                </div>
               </div>
 
               <div className="navbar-btns">
-                <Link
-                  to="/login"
-                  className="light-blue graphik-regular fs-15px pointer "
-                >
+                <p className="light-blue graphik-regular fs-15px pointer ">
                   Login
-                </Link>
-                <Link
-                  to="/register"
-                  className="button-wrapper radius-4px bg-sharp-blue white graphik-regular weight-5"
-                >
+                </p>
+                <button className="button-wrapper radius-4px bg-sharp-blue white graphik-regular weight-5">
                   Free Trial
-                </Link>
+                </button>
               </div>
             </div>
           </div>
