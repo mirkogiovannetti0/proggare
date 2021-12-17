@@ -1,15 +1,18 @@
 import Logo from "components/Logo/Logo";
-import React from "react";
+import {useState} from "react";
 import { Link } from "react-router-dom";
 import "./Register.css";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { ReactComponent as RegisterImg1 } from "assets/images/register-img-1.svg";
 import { ReactComponent as RegisterBooksImg } from "assets/images/register-books-img.svg";
+import axios from "axios";
 
 const LabelInput = ({
   label,
   placeholder,
+  value,
+  onChange,
   type = "text",
   InputComponent,
   wrapperClassName,
@@ -17,7 +20,7 @@ const LabelInput = ({
 }) => {
   return (
     <div className={wrapperClassName}>
-      <label className="fs-13px dark-blue mb-5px block" htmlFor={label}>
+      <label className="fs-13px dark-blue mb-5px block">
         {label}
       </label>
       {InputComponent ? (
@@ -27,6 +30,8 @@ const LabelInput = ({
           type={type}
           placeholder={placeholder}
           className="form-input graphik-light"
+          value={value}
+          onChange={onChange}
           id={label}
         />
       )}
@@ -36,6 +41,54 @@ const LabelInput = ({
 };
 
 function Register() {
+  const [first_name,setFirstName] = useState('');
+  const [last_name,setLastName] = useState('');
+  const [company_name,setCompanyName] = useState('');
+  const [phone_number,setPhoneNumber] = useState('');
+  const [work_email,setWorkEmail] = useState('');
+  const [password,setPassword] = useState('');
+  const [message,setMessage] = useState('');
+
+  const registerAccount = (e) => {
+    e.preventDefault();
+    const data = new FormData();
+    data.append("first_name",first_name);
+    data.append("last_name",last_name);
+    data.append("company_name",company_name);
+    data.append("phone_number",phone_number);
+    data.append("work_email",work_email);
+    data.append("password",password);
+    axios({
+      method: "post",
+      url: "http://localhost/register",
+      data: data,
+      headers: {
+        "Accept":"application/json",
+        "Content-Type": "multipart/form-data",
+      },
+    })
+      .then(function (response) {
+        if(response.status == 201){
+          setMessage(response.data.message);
+          setWorkEmail("");
+          setCompanyName("");
+          setPhoneNumber("");
+          setFirstName("");
+          setLastName("");
+          setPassword("");
+        }
+      })
+      .catch(function (error) {
+        var keys = Object.keys(error.response.data.errors);
+        console.log(error.response.data.errors);
+        keys.forEach((key)=>{
+          error.response.data.errors[key].forEach((err)=>{
+            setMessage(err);
+          })
+        })
+      });
+
+  };
   return (
     <div className="register-wrapper">
       <div className="py-40px">
@@ -67,21 +120,43 @@ function Register() {
                   No credit card required
                 </li>
               </ul>
+              <p>
 
-              <form className="register-form mb-25px">
-                <LabelInput label="First name" placeholder="Help" />
-                <LabelInput label="Last name" placeholder="Scout" />
-                <LabelInput label="Company name" placeholder="Scout's club" />
+              {message}
+              </p>
+
+              <form className="register-form mb-25px" onSubmit={registerAccount}>
+                <LabelInput
+                  label="First name"
+                  placeholder="Help"
+                  value={first_name}
+                  onChange={(e)=>setFirstName(e.target.value)}
+                  />
+                <LabelInput
+                  label="Last name"
+                  placeholder="Scout"
+                  value={last_name}
+                  onChange={(e)=>setLastName(e.target.value)}
+                  />
+                <LabelInput
+                  label="Company name"
+                  placeholder="Scout's club"
+                  value={company_name}
+                  onChange={(e)=>setCompanyName(e.target.value)}
+                  />
                 <LabelInput
                   label="Work email"
                   placeholder="scout@company.com"
+                  value={work_email}
+                  onChange={(e)=>setWorkEmail(e.target.value)}
                 />
                 <LabelInput
                   label="Password"
                   placeholder="Password"
                   type="password"
-                  hint="At least 8 characters
-              "
+                  hint="At least 8 characters "
+                  value={password}
+                  onChange={(e)=>setPassword(e.target.value)}
                   wrapperClassName="mb-10px"
                 />
                 <LabelInput
@@ -90,6 +165,8 @@ function Register() {
                   InputComponent={() => (
                     <PhoneInput
                       country={"us"}
+                      value={phone_number}
+                      onChange={(e)=>setPhoneNumber(e)}
                       containerClass="containerClass"
                     />
                   )}

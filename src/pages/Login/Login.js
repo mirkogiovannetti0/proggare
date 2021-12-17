@@ -1,14 +1,58 @@
-import React from "react";
+import {useState} from "react";
 import Logo from "components/Logo/Logo";
 import { Link } from "react-router-dom";
 import "./Login.css";
 import messagePreviewImg from "assets/images/messages-preview.png";
 import { ReactComponent as GoogleIcon } from "assets/images/google-icon.svg";
 import Checkbox from "components/Checkbox/Checkbox";
+import axios from 'axios';
+
 
 function Login() {
-  const [checked, setChecked] = React.useState(false);
+  const [work_email,setWorkEmail] = useState('');
+  const [message,setMessage] = useState('');
+  const [password,setPassword] = useState('');
+  const [checked, setChecked] = useState(false);
 
+  const loginAccount = (e) => {
+    e.preventDefault();
+    console.log(
+      JSON.stringify({
+          "work_email":work_email,
+          "password":password
+        })
+
+    );
+    const data = new FormData();
+    data.append("work_email",work_email);
+    data.append("password",password);
+    axios({
+      method: "post",
+      url: "http://localhost/login",
+      data: data,
+      headers: {
+        "Accept":"application/json",
+        "Content-Type": "multipart/form-data",
+      },
+    })
+      .then(function (response) {
+        if(response.status == 200){
+          setMessage(response.data.message);
+          setWorkEmail("");
+          setPassword("");
+          console.log(response.data);
+        }
+      })
+      .catch(function (error) {
+        var keys = Object.keys(error.response.data.errors);
+        console.log(error.response.data.errors);
+        keys.forEach((key)=>{
+          error.response.data.errors[key].forEach((err)=>{
+            setMessage(err);
+          })
+        })
+      });
+  };
   const handleChange = () => {
     setChecked(!checked);
   };
@@ -41,11 +85,18 @@ function Login() {
                 Log in
               </p>
 
-              <form className="login-form">
+              <p className="text-green">
+
+              {message}
+              </p>
+              <form className="login-form" onSubmit={loginAccount}>
+
                 <input
                   type="text"
                   className="form-input graphik-light"
                   placeholder="Email Address"
+                  value={work_email}
+                  onChange={(e)=>setWorkEmail(e.target.value)}
                 />
 
                 <div className="mb-10px">
@@ -53,6 +104,8 @@ function Login() {
                     type="password"
                     className="form-input graphik-light "
                     placeholder="Password"
+                    value={password}
+                    onChange={(e)=>setPassword(e.target.value)}
                   />
                 </div>
 
@@ -64,7 +117,7 @@ function Login() {
                   />
                 </div>
 
-                <button className="mb-10px white text-center graphik-regular fs-14px pointer">
+                <button type="submit" className="mb-10px white text-center graphik-regular fs-14px pointer">
                   Log in
                 </button>
                 <p className="light-blue fs-12px weight-4 text-center mb-10px">
