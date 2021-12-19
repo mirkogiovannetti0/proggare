@@ -1,6 +1,7 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import PropTypes from 'prop-types';
 import Logo from "components/Logo/Logo";
-import { Link } from "react-router-dom";
+import { Link, useNavigate,Navigate} from "react-router-dom";
 import "./Login.css";
 import messagePreviewImg from "assets/images/messages-preview.png";
 import { ReactComponent as GoogleIcon } from "assets/images/google-icon.svg";
@@ -8,21 +9,21 @@ import Checkbox from "components/Checkbox/Checkbox";
 import axios from 'axios';
 
 
-function Login() {
+function Login({token,setToken}) {
   const [work_email,setWorkEmail] = useState('');
   const [message,setMessage] = useState('');
   const [password,setPassword] = useState('');
   const [checked, setChecked] = useState(false);
 
+  let navigate = useNavigate()
+  useEffect(()=>{
+    if(localStorage.getItem('token')){
+      setToken(localStorage.getItem('token'));
+    }
+  });
+
   const loginAccount = (e) => {
     e.preventDefault();
-    console.log(
-      JSON.stringify({
-          "work_email":work_email,
-          "password":password
-        })
-
-    );
     const data = new FormData();
     data.append("work_email",work_email);
     data.append("password",password);
@@ -36,26 +37,32 @@ function Login() {
       },
     })
       .then(function (response) {
+          console.log(response.data);
         if(response.status == 200){
           setMessage(response.data.message);
           setWorkEmail("");
           setPassword("");
-          console.log(response.data);
+          setToken(response.data.token);
+          localStorage.setItem('token',response.data.token);
+          navigate('/admin/users');
         }
       })
       .catch(function (error) {
-        var keys = Object.keys(error.response.data.errors);
-        console.log(error.response.data.errors);
-        keys.forEach((key)=>{
-          error.response.data.errors[key].forEach((err)=>{
-            setMessage(err);
+      if(error){
+          var keys = Object.keys(error.response.data.errors);
+          console.log(error.response.data.errors);
+          keys.forEach((key)=>{
+            error.response.data.errors[key].forEach((err)=>{
+              setMessage(err);
+            })
           })
-        })
+          }
       });
   };
   const handleChange = () => {
     setChecked(!checked);
   };
+  if(token){
   return (
     <div className="py-40px">
       <div className="container-wrapper">
@@ -148,6 +155,12 @@ function Login() {
       </div>
     </div>
   );
+    }else{
+    return <Navigate to="/admin/users"/>
+    }
 }
 
 export default Login;
+Login.propTypes = {
+  setToken: PropTypes.func.isRequired
+}
