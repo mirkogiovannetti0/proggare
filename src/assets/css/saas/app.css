@@ -878,11 +878,10 @@ body[data-layout-mode="detached"] .navbar-custom {
 .footer {
   bottom: 0;
   padding: 19px 15px 20px;
-  position: absolute;
   right: 0;
   color: #98a6ad;
   left: 240px;
-  background-color: #eeeff3; }
+}
   .footer .footer-links a {
     color: #98a6ad;
     margin-left: 1.5rem;
