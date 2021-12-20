@@ -21,7 +21,10 @@ function Login({token,setToken}) {
     if(localStorage.getItem('token')){
       setToken(localStorage.getItem('token'));
     }
-  });
+    if(localStorage.getItem('user')){
+      setUser(JSON.parse(localStorage.getItem('user')));
+    }
+  },[]);
 
   const loginAccount = (e) => {
     e.preventDefault();
@@ -45,6 +48,7 @@ function Login({token,setToken}) {
           setToken(response.data.token);
           setUser(response.data.user);
           localStorage.setItem('token',response.data.token);
+          localStorage.setItem('user',JSON.stringify(response.data.user));
           if(response.data.user.roles[0].role == "Admin"){
             navigate('/admin/users');
           }
@@ -67,7 +71,7 @@ function Login({token,setToken}) {
   const handleChange = () => {
     setChecked(!checked);
   };
-  if(token != ""){
+  if(token == ""){
   return (
     <div className="py-40px">
       <div className="container-wrapper">
@@ -160,7 +164,9 @@ function Login({token,setToken}) {
       </div>
     </div>
   );
-    }else{
+  }else if(user && user.roles[0].role == "Admin"){
+    return <Navigate to="/admin/users" />
+  }else{
   return (
     <div className="py-40px">
       <div className="container-wrapper">
