@@ -60,7 +60,7 @@ function Register() {
     data.append("password",password);
     axios({
       method: "post",
-      url: "http://localhost/register",
+      url: "http://matteodicastro.it/progare-api/public/register",
       data: data,
       headers: {
         "Accept":"application/json",

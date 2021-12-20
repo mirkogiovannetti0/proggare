@@ -33,7 +33,7 @@ function Login({token,setToken}) {
     data.append("password",password);
     axios({
       method: "post",
-      url: "http://localhost/login",
+      url: "http://matteodicastro.it/progare-api/public/login",
       data: data,
       headers: {
         "Accept":"application/json",

@@ -43,7 +43,7 @@ function Admin({token}){
     const getUsers = ()=>{
       axios({
         method: "get",
-        url: "http://localhost/api/users/",
+        url: "http://matteodicastro.it/progare-api/public/api/users/",
         headers: {
           "Accept":"application/json",
           "Authorization":"Bearer "+token,
@@ -79,7 +79,7 @@ function Admin({token}){
     data.append("password",password);
       axios({
         method: "post",
-        url: "http://localhost/api/users/",
+        url: "http://matteodicastro.it/progare-api/public/api/users/",
       data:data,
         headers: {
           "Accept":"application/json",
@@ -117,7 +117,7 @@ function Admin({token}){
 
     axios({
       method: "put",
-      url: "http://localhost/api/users/"+id,
+      url: "http://matteodicastro.it/progare-api/public/api/users/"+id,
       data:JSON.stringify({
         first_name:first_name,
         last_name:first_name,
@@ -160,7 +160,7 @@ function Admin({token}){
       e.preventDefault();
     axios({
       method: "delete",
-      url: "http://localhost/api/users/"+id,
+      url: "http://matteodicastro.it/progare-api/public/api/users/"+id,
       headers: {
         "Accept":"application/json",
         "Authorization":"Bearer "+token,
